@@ -1,0 +1,114 @@
+1.- pasar xls a csv       #acomodar el excel dejar fecha y cotizacion y pasar a .csv
+2.-
+crear usuario
+base de datos
+crear tabla para sexenio 
+-1 crear tabla sexenio 2 #id fecha cotizacion
+
+# Crear usuario y base de datos
+create user metodos with password 'ultr4s3cr3t0';
+create database metodos_db owner metodos;
+
+CREATE TABLE cotizaciones (
+    id SERIAL PRIMARY KEY,
+    fecha DATE NOT NULL,
+    cotizacion TEXT NOT NULL
+);
+
+ALTER DATABASE metodos_db OWNER TO metodos;
+ALTER TABLE cotizaciones OWNER TO metodos;
+
+ALTER TABLE cotizaciones ALTER COLUMN cotizacion TYPE NUMERIC(12,2) USING cotizacion::NUMERIC(12,2);
+
+COPY cotizaciones(fecha, cotizacion) FROM '/tmp/sexenio-2012-2018.csv' WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');
+
+DELETE FROM public.cotizaciones 
+WHERE cotizacion = 'N/E' OR cotizacion IS NULL OR cotizacion = '';
+
+cd ~/Descargas
+python3 -m venv venv
+source venv/bin/activate
+pip install pandas sqlalchemy psycopg2-binary
+ipython3 -i pandas-ejemplo.py
+
+medfia 
+varianza
+ 
+# sacar maximo minimo y rango 
+datos['cotizacion'] = pd.to_numeric(datos['cotizacion'], errors='coerce')
+
+maximo = datos['cotizacion'].max()
+minimo = datos['cotizacion'].min()
+rango = maximo - minimo
+
+print(f"Máximo: {maximo}")
+print(f"Mínimo: {minimo}")
+print(f"Rango: {rango}")
+
+# Asignar el valor al serial
+select pg_catalog.setval('cotizaciones_id_seq',546, true);
+
+# Importar y exportar
+COPY stocks TO '/tmp/stocks.csv' WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');
+COPY stocks FROM '/tmp/stocks.csv' WITH (FORMAT CSV, HEADER TRUE, DELIMITER ','); 
+COPY cotizaciones(fecha, cotizacion) FROM '/tmp/sexenio-2012-2018.csv' WITH (FORMAT CSV, HEADER TRUE, DELIMITER ',');
+copy (SELECT fecha,cotizacion FROM cotizaciones WHERE fecha >= '01-01-2025' and fecha <= '30-06-2025')
+TO '/tmp/primer-semestre-2025.csv' WITH (FORMAT csv, HEADER);
+
+
+---------------------------------------------------------------------------------------------------------------
+
+primer sexenio
+
+In [9]: media
+Out[9]: np.float64(16.035052186009537)
+
+In [10]: varianza
+Out[10]: np.float64(7.913853322543928)
+
+In [11]: desviacion_estandar
+Out[11]: np.float64(2.8131571805613578)
+
+In [4]: datos['cotizacion'] = pd.to_numeric(datos['cotizacion'], errors='coerce')
+
+In [5]: maximo = datos['cotizacion'].max()
+
+In [6]: minimo = datos['cotizacion'].min()
+
+In [7]: rango = maximo - minimo
+
+In [12]: print(f"Máximo: {maximo}")
+    ...:    ...: print(f"Mínimo: {minimo}")
+    ...:    ...: print(f"Rango: {rango}")
+    ...: 
+Máximo: 21.9076
+Mínimo: 11.9807
+Rango: 9.926899999999998
+-----------------------------------------------------------------------------------------------------------------------
+
+sexenio 2
+In [1]: media
+Out[1]: np.float64(19.53849794708029)
+
+In [2]: varianza
+Out[2]: np.float64(2.5614885493385495)
+
+In [3]: desviacion_estandar
+Out[3]: np.float64(1.6004651040677362)
+
+In [4]: datos['cotizacion'] = pd.to_numeric(datos['cotizacion'], errors='coerce')
+
+In [5]: maximo = datos['cotizacion'].max()
+
+In [6]: minimo = datos['cotizacion'].min()
+
+In [7]: rango = maximo - minimo
+
+In [8]: print(f"Máximo: {maximo}")
+   ...:    ...: print(f"Mínimo: {minimo}")
+   ...:    ...: print(f"Rango: {rango}")
+Máximo: 25.1185
+Mínimo: 16.3357
+Rango: 8.782800000000002
+
+
